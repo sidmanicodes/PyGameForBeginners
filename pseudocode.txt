@@ -1,0 +1,37 @@
+GameFunctionality class()
+- __init__()
+  # intializes class
+- draw_window()
+  # draws window
+- yellow_handle_movement()
+  # handles yellow ship movement
+- red_handle_movement()
+  # handles red ship movement
+- handle_bullets()
+  # handles various bullet events
+
+GameState class()
+- __init__()
+  # initializes game state to name_scrn() 
+- name_scrn()
+  # user enters name on screen (will later be displayed next to health)
+  # once complete, game state control is sent to main_game()
+- main_game()
+  # includes functionality that is currently in while loop
+  # once complete, game state control is sent to end_scrn()
+- end_scrn()
+  # prints a message for who won or if there was a tie
+  # waits for 5 seconds and then asks if the user would like to play again
+  # once complete, calls the main
+- state_manager()
+  # plays the current game state
+
+---------------------------------
+
+main
+- create ships
+- create gamestate object
+- initialize clock
+- run game loop
+  # start clock
+  # call state_manager()
