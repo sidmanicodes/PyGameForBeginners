@@ -77,6 +77,8 @@ HEART_IMG = pygame.image.load(
 )
 HEART = pygame.transform.scale(HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
 
+blank_var = None
+
 class GameFunctionality():
     def __init__(self):
         pass
