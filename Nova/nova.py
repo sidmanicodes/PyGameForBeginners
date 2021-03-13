@@ -77,75 +77,80 @@ HEART_IMG = pygame.image.load(
 )
 HEART = pygame.transform.scale(HEART_IMG, (HEART_WIDTH, HEART_HEIGHT))
 
-blank_var = None
-
 class GameFunctionality():
-    def __init__(self):
+    def __init__(self, red, yellow, red_bullets, yellow_bullets, red_health, yellow_health):
+        self.red = red
+        self.yellow = yellow
+        self.red_bullets = red_bullets
+        self.yellow_bullets = yellow_bullets
+        self.red_health = red_health
+        self.yellow_health = yellow_health
+    def draw_intro(self):
         pass
-    def draw_window(self, red, yellow, red_bullets, yellow_bullets, red_health, yellow_health):
+    def draw_game(self):
         WIN.blit(SPACE_BG, (0,0))
         pygame.draw.rect(WIN, BLACK, BORDER)
         
-        WIN.blit(YELLOW_SPACESHIP, (yellow.x, yellow.y))
-        WIN.blit(RED_SPACESHIP, (red.x, red.y))
+        WIN.blit(YELLOW_SPACESHIP, (self.yellow.x, self.yellow.y))
+        WIN.blit(RED_SPACESHIP, (self.red.x, self.red.y))
 
-        red_health_text = HEALTH_FONT.render("Health:", 1, WHITE)
-        yellow_health_text = HEALTH_FONT.render("Health:", 1, WHITE)
+        self.red_health_text = HEALTH_FONT.render("Health:", 1, WHITE)
+        self.yellow_health_text = HEALTH_FONT.render("Health:", 1, WHITE)
 
-        WIN.blit(red_health_text, (BORDER.x + BORDER.width + 30, 20))
-        WIN.blit(yellow_health_text, (30, 20))
+        WIN.blit(self.red_health_text, (BORDER.x + BORDER.width + 30, 20))
+        WIN.blit(self.yellow_health_text, (30, 20))
 
-        for n in range(yellow_health):
-            WIN.blit(HEART, ((yellow_health_text.get_width() + 22 + (55 * n)), 10))
+        for n in range(self.yellow_health):
+            WIN.blit(HEART, ((self.yellow_health_text.get_width() + 22 + (55 * n)), 10))
 
-        for n in range(red_health):
-            WIN.blit(HEART, ((BORDER.x + BORDER.width + red_health_text.get_width() + 23 + (55 * n)), 10))
+        for n in range(self.red_health):
+            WIN.blit(HEART, ((BORDER.x + BORDER.width + self.red_health_text.get_width() + 23 + (55 * n)), 10))
 
-        for bullet in red_bullets:
+        for bullet in self.red_bullets:
             pygame.draw.rect(WIN, RED, bullet)
 
-        for bullet in yellow_bullets:
+        for bullet in self.yellow_bullets:
             pygame.draw.rect(WIN, YELLOW, bullet)
 
         pygame.display.update()
-    def yellow_handle_movement(self, keys_pressed, yellow):
-        if keys_pressed[pygame.K_a] and (yellow.x - VEL) > 0: # LEFT
-            yellow.x -= VEL
-        if keys_pressed[pygame.K_d] and (yellow.x + VEL + yellow.height) < BORDER.x: # RIGHT
-            yellow.x += VEL
-        if keys_pressed[pygame.K_w] and (yellow.y - VEL) > 0: # UP
-            yellow.y -= VEL
-        if keys_pressed[pygame.K_s] and (yellow.y + VEL + yellow.width) < HEIGHT: # DOWN
-            yellow.y += VEL
-    def red_handle_movement(self, keys_pressed, red):
-        if keys_pressed[pygame.K_LEFT] and (red.x - VEL + (BORDER.width/2) - 10) > BORDER.x: # LEFT 
-            red.x -= VEL
-        if keys_pressed[pygame.K_RIGHT] and (red.x + VEL + (red.width - 30)) < WIDTH: # RIGHT
-            red.x += VEL
-        if keys_pressed[pygame.K_UP] and (red.y - VEL) > 0: # UP
-            red.y -= VEL
-        if keys_pressed[pygame.K_DOWN] and (red.y + VEL + red.height + 10) < HEIGHT: # DOWN
-            red.y += VEL
-    def handle_bullets(self, yellow_bullets, red_bullets, yellow, red):
-        for bullet in yellow_bullets:
+    def yellow_handle_movement(self, keys_pressed):
+        if keys_pressed[pygame.K_a] and (self.yellow.x - VEL) > 0: # LEFT
+            self.yellow.x -= VEL
+        if keys_pressed[pygame.K_d] and (self.yellow.x + VEL + self.yellow.height) < BORDER.x: # RIGHT
+            self.yellow.x += VEL
+        if keys_pressed[pygame.K_w] and (self.yellow.y - VEL) > 0: # UP
+            self.yellow.y -= VEL
+        if keys_pressed[pygame.K_s] and (self.yellow.y + VEL + self.yellow.width) < HEIGHT: # DOWN
+            self.yellow.y += VEL
+    def red_handle_movement(self, keys_pressed):
+        if keys_pressed[pygame.K_LEFT] and (self.red.x - VEL + (BORDER.width/2) - 10) > BORDER.x: # LEFT 
+            self.red.x -= VEL
+        if keys_pressed[pygame.K_RIGHT] and (self.red.x + VEL + (self.red.width - 30)) < WIDTH: # RIGHT
+            self.red.x += VEL
+        if keys_pressed[pygame.K_UP] and (self.red.y - VEL) > 0: # UP
+            self.red.y -= VEL
+        if keys_pressed[pygame.K_DOWN] and (self.red.y + VEL + self.red.height + 10) < HEIGHT: # DOWN
+            self.red.y += VEL
+    def handle_bullets(self):
+        for bullet in self.yellow_bullets:
             bullet.x += BULLET_VEL
-            if red.colliderect(bullet):
+            if self.red.colliderect(bullet):
                 pygame.event.post(pygame.event.Event(RED_HIT))
-                yellow_bullets.remove(bullet)
+                self.yellow_bullets.remove(bullet)
             elif bullet.x > WIDTH:
-                yellow_bullets.remove(bullet)
-        for bullet in red_bullets:
+                self.yellow_bullets.remove(bullet)
+        for bullet in self.red_bullets:
             bullet.x -= BULLET_VEL
-            if yellow.colliderect(bullet):
+            if self.yellow.colliderect(bullet):
                 pygame.event.post(pygame.event.Event(YELLOW_HIT))
-                red_bullets.remove(bullet)
+                self.red_bullets.remove(bullet)
             elif bullet.x < 0 - bullet.width:
-                red_bullets.remove(bullet)
+                self.red_bullets.remove(bullet)
 
 
 class GameState(GameFunctionality):
     def __init__(self, red, yellow, red_bullets, yellow_bullets, red_health, yellow_health):
-        self.state = "main_game"
+        self.state = "name_scrn"
         self.end_game = False
         self.red = red
         self.yellow = yellow
@@ -154,7 +159,7 @@ class GameState(GameFunctionality):
         self.red_health = red_health
         self.yellow_health = yellow_health
     def name_scrn(self):
-        pass
+        
     def main_game(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -198,7 +203,7 @@ class GameState(GameFunctionality):
             winner_text = "Red wins!"
 
         if winner_text != "":
-            self.draw_window(self.red, self.yellow, self.red_bullets, self.yellow_bullets, self.red_health, self.yellow_health)
+            self.draw_game()
             self.end_scrn(winner_text)
             self.end_game = True
 
@@ -206,12 +211,12 @@ class GameState(GameFunctionality):
         keys_pressed = pygame.key.get_pressed()
 
         # Calls the ships' movement handlers
-        self.yellow_handle_movement(keys_pressed, self.yellow)
-        self.red_handle_movement(keys_pressed, self.red)
+        self.yellow_handle_movement(keys_pressed)
+        self.red_handle_movement(keys_pressed)
 
-        self.handle_bullets(self.yellow_bullets, self.red_bullets, self.yellow, self.red)
+        self.handle_bullets()
 
-        self.draw_window(self.red, self.yellow, self.red_bullets, self.yellow_bullets, self.red_health, self.yellow_health)
+        self.draw_game()
     def end_scrn(self, text):
         draw_text = WINNER_FONT.render(text, 1, WHITE)
         WIN.blit(draw_text, 
@@ -219,9 +224,8 @@ class GameState(GameFunctionality):
         pygame.display.update()
         pygame.time.delay(5000)
     def state_manager(self):
-        if self.state == "main_game":
-            self.main_game()
-
+        if self.state == "name_scrn":
+            self.name_scrn()
 
 def main():
     red = pygame.Rect(700, 300, SPACESHIP_WIDTH, SPACESHIP_HEIGHT)
@@ -236,6 +240,7 @@ def main():
     clock = pygame.time.Clock()
     run = True
 
+    game_functionality = GameFunctionality(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health)
     game_state = GameState(red, yellow, red_bullets, yellow_bullets, red_health, yellow_health)
 
     pygame.mixer.Sound.set_volume(BG_MUSIC, 0.1)
